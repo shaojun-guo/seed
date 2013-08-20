@@ -15,9 +15,61 @@
     <string name="no_contact">尚未添加任何好友</string>
 
     <!-- Errors -->
+    <!--
+    500    interna-server-error    WAIT
+    403    forbidden    AUTH
+    400    bad-request    MODIFY
+    404    item-not-found    CANCEL
+    409    conflict    CANCEL
+    501    feature-not-implemented    CANCEL
+    302    gone    MODIFY
+    400    jid-malformed    MODIFY
+    406    no-acceptable    MODIFY
+    405    not-allowed    CANCEL
+    401    not-authorized    AUTH
+    402    payment-required    AUTH
+    404    recipient-unavailable    WAIT
+    302    redirect    MODIFY
+    407    registration-required    AUTH
+    404    remote-server-not-found    CANCEL
+    504    remote-server-timeout    WAIT
+    502    remote-server-error    CANCEL
+    500    resource-constraint    WAIT
+    503    service-unavailable    CANCEL
+    407    subscription-required    AUTH
+    500    undefined-condition    WAIT
+    400    unexpected-condition    WAIT
+    408    request-timeout    CANCEL
+    -->
     <string name="unknown_error">未知错误！</string>
     <string name="user_empty">用户名不能为空！</string>
     <string name="password_empty">密码不能为空！</string>
-    <string name="not_authorized">用户名或密码错误！</string>
+
+    <string name="e302_gone">gone</string>
+    <string name="e302_redirect">redirect</string>
+
+    <string name="e400_bad_request">bad request</string>
+    <string name="e400_jid_malformed">jid malformed</string>
+    <string name="e400_unexpected_condition">unexpected condition</string>
+    <string name="e401_not_authorized">用户名或密码错误！</string>
+    <string name="e402_payment_required">payment required</string>
+    <string name="e403_forbidden">forbidden</string>
+    <string name="e404_item_not_found">item not found</string>
+    <string name="e404_recipient_unavailable">recipient unavailable</string>
+    <string name="e404_remote_server_not_found">remote server not found</string>
+    <string name="e405_not_allowed">not allowed</string>
+    <string name="e406_no_acceptable">no acceptable</string>
+    <string name="e407_registration_required">registration required</string>
+    <string name="e407_subscription_required">subscription required</string>
+    <string name="e408_request_timeout">request timeout</string>
+    <string name="e409_conflict">conflict</string>
+
+    <string name="e500_internal_server_error">internal server error</string>
+    <string name="e500_undefined_condition">undefined condition</string>
+    <string name="e501_feature_not_implemented">feature not implemented</string>
+    <string name="e502_remote_server_error">remote server error</string>
+    <string name="e500_resource_constraint">resource constraint</string>
+    <string name="e503_service_unavailable">service unavailable</string>
+    <string name="e504_remote_server_timeout">remote server timeout</string>
 
 </resources>

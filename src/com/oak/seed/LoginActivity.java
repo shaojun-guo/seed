@@ -70,15 +70,14 @@ public class LoginActivity extends BinderActivity {
 			String password = params[1];
 			try {
 				mCm.login(userName, password);
+				return true;
 			} catch(XMPPException e) {
-				e.printStackTrace();
-				mErrorMsg = Utils.getErrorMsg(LoginActivity.this, e.getXMPPError().getCode());
-				return false;
+				mErrorMsg = Utils.getErrorMsg(LoginActivity.this, e.getXMPPError());
 			} catch (Exception e) {
+				e.printStackTrace();
 				mErrorMsg = getString(R.string.unknown_error);
-				return false;
 			}
-			return true;
+			return false;
 		}
 
 	}

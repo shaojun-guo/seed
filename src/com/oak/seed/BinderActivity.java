@@ -1,18 +1,18 @@
 package com.oak.seed;
 
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.FragmentActivity;
 
 import com.oak.seed.connection.ConnectionManager;
 import com.oak.seed.connection.SeedService;
 import com.oak.seed.connection.SeedService.LocalBinder;
 
-public class BinderActivity extends Activity {
+public class BinderActivity extends FragmentActivity {
 	boolean mBound;
 	SeedService mService;
 	WaitingDialog mWaitingDialog;

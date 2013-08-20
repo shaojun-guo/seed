@@ -1,8 +1,12 @@
 package com.oak.seed.connection;
 
+import java.util.Collection;
 import java.util.HashMap;
 
+import org.jivesoftware.smack.Roster;
+import org.jivesoftware.smack.RosterListener;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Presence;
 
 import android.app.Service;
 import android.content.Intent;
@@ -48,6 +52,11 @@ public class SeedService extends Service {
 
 	public ConnectionManager getConnectionManager() {
 		return mCm;
+	}
+
+	public void quit() {
+		mCm.disconnect();
+		stopSelf();
 	}
 
 	public void onReceiveMessage(Message message) {
