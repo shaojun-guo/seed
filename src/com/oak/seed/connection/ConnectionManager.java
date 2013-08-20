@@ -20,6 +20,7 @@ public class ConnectionManager {
 	private ConnectionConfiguration mConConfig;
 	private XMPPConnection mConnection;
 	private HashMap<String, Chat> mChatPool;
+	private Roster mRoster;
 	
 	public ConnectionManager(SeedService service) {
 		mService = service;
@@ -46,10 +47,11 @@ public class ConnectionManager {
 			mConnection.connect();
 		}
 		mConnection.login(userName, password);
+		mRoster = mConnection.getRoster();
 	}
 
 	public Roster getRoster() {
-		return mConnection.getRoster();
+		return mRoster;
 	}
 
 	public void createChatWith(String jid) {

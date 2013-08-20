@@ -126,7 +126,6 @@ public class ContactAdapter extends BaseExpandableListAdapter {
 		ContactItem contact = mContacts.get(group.getName()).get(childPosition);
 		RosterEntry entry = contact.getEntry();
 		Presence presence = contact.getPresence();
-		MyLog.d("ContactAdapter", "from:" + presence.getFrom() + " " + presence);
         ContactViewHolder holder;
         if (view == null) {
             view = LayoutInflater.from(mContext).inflate(R.layout.contact_item, null);
