@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.oak.seed.data.ContactItem;
 import com.oak.seed.data.GroupItem;
 import com.oak.seed.utils.MyLog;
+import com.oak.seed.utils.Utils;
 
 public class ContactAdapter extends BaseExpandableListAdapter {
 	Context mContext;
@@ -137,7 +138,7 @@ public class ContactAdapter extends BaseExpandableListAdapter {
         } else {
             holder = (ContactViewHolder)view.getTag();
         }
-        holder.presenceIcon.setImageResource(getPresenceResId(presence));
+        holder.presenceIcon.setImageResource(Utils.getPresenceIconId(presence));
         holder.name.setText(entry.getName());
         holder.status.setText(presence.getStatus());
 		return view;
@@ -157,26 +158,5 @@ public class ContactAdapter extends BaseExpandableListAdapter {
 		TextView name;
 		TextView status;
 	}
-	
-	private int getPresenceResId(Presence p) {
-		Mode mode = p.getMode();
-		Type type = p.getType();
 
-		int resId = R.drawable.presence_online;
-		if (type == Type.unavailable) {
-			return R.drawable.presence_offline;
-		}
-		if (mode == Mode.available) {
-			resId = R.drawable.presence_online;
-		} else if (mode == Mode.away) {
-			resId = R.drawable.presence_away;
-		} else if (mode == Mode.chat) {
-			resId = R.drawable.presence_online;
-		} else if (mode == Mode.dnd) {
-			resId = R.drawable.presence_busy;
-		} else if (mode == Mode.xa) {
-			resId = R.drawable.presence_audio_away;
-		}
-		return resId;
-	}
 }

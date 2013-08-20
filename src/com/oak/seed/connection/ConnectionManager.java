@@ -54,6 +54,10 @@ public class ConnectionManager {
 		return mRoster;
 	}
 
+	public String getSelfName() {
+		return mConnection.getAccountManager().getAccountAttribute("name");
+	}
+
 	public void createChatWith(String jid) {
         ChatManager chatmanager = mConnection.getChatManager();
         Chat chat = chatmanager.createChat(jid,

@@ -1,6 +1,9 @@
 package com.oak.seed.utils;
 
+import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.Presence.Mode;
+import org.jivesoftware.smack.packet.Presence.Type;
 
 import com.oak.seed.R;
 
@@ -92,4 +95,29 @@ public class Utils {
 		return context.getString(resId);
 	}
 
+	public static int getPresenceIconId(Presence p) {
+		Mode mode = p.getMode();
+		Type type = p.getType();
+
+		if (type == Type.unavailable) {
+			return R.drawable.presence_offline;
+		}
+		return getModeIconId(mode);
+	}
+
+	public static int getModeIconId(Mode mode) {
+		int resId = R.drawable.presence_online;
+		if (mode == Mode.available) {
+			resId = R.drawable.presence_online;
+		} else if (mode == Mode.away) {
+			resId = R.drawable.presence_away;
+		} else if (mode == Mode.chat) {
+			resId = R.drawable.presence_online;
+		} else if (mode == Mode.dnd) {
+			resId = R.drawable.presence_busy;
+		} else if (mode == Mode.xa) {
+			resId = R.drawable.presence_audio_away;
+		}
+		return resId;
+	}
 }
