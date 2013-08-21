@@ -1,6 +1,9 @@
 package com.oak.seed;
 
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Presence.Mode;
+import org.jivesoftware.smack.packet.Presence.Type;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -8,15 +11,20 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import com.oak.seed.utils.Utils;
 
 public class LoginActivity extends BinderActivity {
 	EditText mUserNameInput;
 	EditText mPasswordInput;
+	Spinner mStatusSelector;
 	Button mLoginBtn;
+	Presence mSelectedPresence = new Presence(Type.available);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +32,20 @@ public class LoginActivity extends BinderActivity {
 		setContentView(R.layout.activity_login);
 		mUserNameInput = (EditText)findViewById(R.id.username_input);
 		mPasswordInput = (EditText)findViewById(R.id.password_input);
+		mStatusSelector = (Spinner)findViewById(R.id.status_selector);
+		mStatusSelector.setAdapter(new StatusAdapter(this));
+		mStatusSelector.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
+				Mode mode = (Mode) parent.getAdapter().getItem(position);
+				mSelectedPresence.setMode(mode);
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+			}
+		});
 		mUserNameInput.setText("test1");
 		mPasswordInput.setText("111");
 		mLoginBtn = (Button)findViewById(R.id.login_btn);
@@ -47,17 +69,23 @@ public class LoginActivity extends BinderActivity {
 			return;
 		}
 		mWaitingDialog.show();
-		new LoginTask().execute(userName, password);
+		new LoginTask(mSelectedPresence).execute(userName, password);
 	}
 
 	class LoginTask extends AsyncTask<String, Void, Boolean> {
 		String mErrorMsg;
+		Presence mPresence;
+		public LoginTask(Presence p) {
+			mPresence = p;
+		}
 
 		@Override
 		protected void onPostExecute(Boolean result) {
 			mWaitingDialog.dismiss();
 			if (result) {
-				startActivity(new Intent(LoginActivity.this, ContactListActivity.class));
+				Intent i = new Intent(LoginActivity.this, ContactListActivity.class);
+				i.putExtra("status", StatusAdapter.getModeIndex(mSelectedPresence.getMode()));
+				startActivity(i);
 				finish();
 			} else {
 				showErrorDialog(mErrorMsg);
@@ -69,7 +97,7 @@ public class LoginActivity extends BinderActivity {
 			String userName = params[0];
 			String password = params[1];
 			try {
-				mCm.login(userName, password);
+				mCm.login(userName, password, mPresence);
 				return true;
 			} catch(XMPPException e) {
 				mErrorMsg = Utils.getErrorMsg(LoginActivity.this, e.getXMPPError());

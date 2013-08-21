@@ -14,14 +14,27 @@ import android.widget.TextView;
 import com.oak.seed.utils.Utils;
 
 public 	class StatusAdapter extends BaseAdapter {
+
 	Context mContext;
-	final Presence.Mode[] mStatusList = {
+
+	static final Presence.Mode[] mStatusList = {
 			Mode.chat,
 			Mode.available,
 			Mode.away,
 			Mode.xa,
 			Mode.dnd
 	};
+
+	public static int getModeIndex(Mode mode) {
+		int i = 0;
+		for (Mode m : mStatusList) {
+			if (m == mode) {
+				return i;
+			}
+			i++;
+		}
+		return i;
+	}
 
 	public StatusAdapter(Context context) {
 		mContext = context;

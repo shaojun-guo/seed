@@ -31,12 +31,14 @@ public class ContactListActivity extends BinderActivity {
 	View mEmptyView;
 
 	Spinner mStatusSelector;
+	int mCurStatus;
 
 	TextView mMyName;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mCurStatus = getIntent().getIntExtra("status", 0);
 		setContentView(R.layout.activity_contact_list);
 		mMyName = (TextView) findViewById(R.id.my_name);
 		mStatusSelector = (Spinner) findViewById(R.id.my_status);
@@ -47,7 +49,10 @@ public class ContactListActivity extends BinderActivity {
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int position, long id) {
 				Mode mode = (Mode) parent.getAdapter().getItem(position);
-				new ChangeStatusTask().execute(mode);
+				if (mCurStatus != position) {
+					new ChangeStatusTask().execute(mode);
+					mCurStatus = position;
+				}
 			}
 
 			@Override
@@ -80,6 +85,7 @@ public class ContactListActivity extends BinderActivity {
 
 	public void onBound() {
 		mMyName.setText(mCm.getSelfName());
+		mStatusSelector.setSelection(mCurStatus);
 		mRoster = mCm.getRoster();
 		mRoster.addRosterListener(new RosterListener() {
 			@Override

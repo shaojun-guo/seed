@@ -10,6 +10,7 @@ import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Presence;
 
 
 public class ConnectionManager {
@@ -42,11 +43,14 @@ public class ConnectionManager {
 		mConnection.disconnect();
 	}
 
-	public void login(String userName, String password) throws XMPPException {
+	public void login(String userName, String password, Presence presence) throws XMPPException {
 		if (!mConnection.isConnected()) {
 			mConnection.connect();
 		}
 		mConnection.login(userName, password);
+		if (presence != null) {
+			mConnection.sendPacket(presence);
+		}
 		mRoster = mConnection.getRoster();
 	}
 
