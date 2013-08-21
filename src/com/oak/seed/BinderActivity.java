@@ -7,6 +7,10 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.Window;
 
 import com.oak.seed.connection.ConnectionManager;
 import com.oak.seed.connection.SeedService;
@@ -17,11 +21,11 @@ public class BinderActivity extends FragmentActivity {
 	SeedService mService;
 	WaitingDialog mWaitingDialog;
 	ConnectionManager mCm;
-	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		mWaitingDialog = new WaitingDialog(this);
 	}
 
@@ -63,4 +67,5 @@ public class BinderActivity extends FragmentActivity {
 	public void onBound() {
 		
 	}
+
 }

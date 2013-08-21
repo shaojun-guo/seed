@@ -13,6 +13,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -125,4 +128,25 @@ public class ContactListActivity extends BinderActivity {
 		}
 	}
 
+	@Override
+	public boolean onCreatePanelMenu(int featureId, Menu item) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main, item);
+		return true;
+	}
+
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_settings:
+			return true;
+		case R.id.action_quit:
+			mCm.disconnect();
+			mService.stopSelf();
+			finish();
+			return true;
+		default:
+			return super.onMenuItemSelected(featureId, item);
+		}
+	}
 }

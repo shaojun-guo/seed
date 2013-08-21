@@ -11,7 +11,7 @@ public class SplashActivity extends BinderActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(android.R.layout.activity_list_item);
+		setContentView(R.layout.activity_splash);
 		startService(new Intent(this, SeedService.class));
 	}
 
