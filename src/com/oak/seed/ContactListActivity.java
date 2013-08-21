@@ -8,27 +8,21 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Presence.Mode;
 import org.jivesoftware.smack.packet.Presence.Type;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.BaseAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.oak.seed.data.ContactItem;
 import com.oak.seed.utils.MyLog;
-import com.oak.seed.utils.Utils;
 
 public class ContactListActivity extends BinderActivity {
 	ExpandableListView mContactListView;
@@ -113,60 +107,6 @@ public class ContactListActivity extends BinderActivity {
 		}
 	};
 
-	class StatusAdapter extends BaseAdapter {
-		Context mContext;
-		final Presence.Mode[] mStatusList = {
-				Mode.available,
-				Mode.away,
-				Mode.chat,
-				Mode.dnd,
-				Mode.xa
-		};
-
-		public StatusAdapter(Context context) {
-			mContext = context;
-		}
-
-		@Override
-		public int getCount() {
-			return mStatusList.length;
-		}
-
-		@Override
-		public Object getItem(int position) {
-			return mStatusList[position];
-		}
-
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
-
-		@Override
-		public View getView(int position, View view, ViewGroup parent) {
-			Mode status = mStatusList[position];
-			ViewHolder holder;
-			if (view == null) {
-				view = LayoutInflater.from(mContext).inflate(R.layout.status_item, null);
-				holder = new ViewHolder();
-				holder.icon = (ImageView) view.findViewById(R.id.icon);
-				holder.text = (TextView) view.findViewById(R.id.text);
-				view.setTag(holder);
-			} else {
-				holder = (ViewHolder) view.getTag();
-			}
-			holder.icon.setImageResource(Utils.getModeIconId(status));
-			holder.text.setText(status.name());
-			return view;
-		}
-
-	}
-
-	class ViewHolder {
-		ImageView icon;
-		TextView text;
-	}
-
 	class ChangeStatusTask extends AsyncTask<Mode, Void, Void> {
 
 		@Override
@@ -177,6 +117,6 @@ public class ContactListActivity extends BinderActivity {
 			mCm.getConnection().sendPacket(p);
 			return null;
 		}
-
 	}
+
 }

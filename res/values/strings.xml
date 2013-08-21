@@ -14,6 +14,8 @@
 
     <string name="no_contact">尚未添加任何好友</string>
 
+    <string name="send">发送</string>
+
     <!-- Errors -->
     <!--
     500    interna-server-error    WAIT
