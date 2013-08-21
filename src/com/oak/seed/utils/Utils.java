@@ -1,13 +1,19 @@
 package com.oak.seed.utils;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.packet.Presence.Mode;
 import org.jivesoftware.smack.packet.Presence.Type;
-
-import com.oak.seed.R;
+import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smackx.packet.DelayInformation;
 
 import android.content.Context;
+
+import com.oak.seed.R;
+import com.oak.seed.data.MessageItem;
 
 public class Utils {
 
@@ -119,5 +125,30 @@ public class Utils {
 			resId = R.drawable.presence_audio_away;
 		}
 		return resId;
+	}
+
+	public static MessageItem makeReceivedMessage(String name, Message message) {
+		String body = message.getBody();
+		Date date = new Date();
+		DelayInformation delayInfo = (DelayInformation) message.getExtension("x", "jabber:x:delay");
+		if (delayInfo != null) {
+			date = delayInfo.getStamp();
+		}
+		MessageItem item = new MessageItem();
+		item.setName(name);
+		item.setTime(date.getTime());
+		item.setBody(body);
+		item.setIsSelf(false);
+		return item;
+	}
+
+	public static MessageItem makeMessageToSend(String name, String body) {
+		MessageItem item = new MessageItem();
+		item.setName(name);
+		item.setBody(body);
+		Date date = new Date();
+		item.setTime(date.getTime());
+		item.setIsSelf(true);
+		return item;
 	}
 }

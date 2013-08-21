@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManager;
+import org.jivesoftware.smack.ChatManagerListener;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.Roster;
@@ -20,8 +21,14 @@ public class ConnectionManager {
 
 	private ConnectionConfiguration mConConfig;
 	private XMPPConnection mConnection;
+	private ChatManager mChatMgr;
 	private HashMap<String, Chat> mChatPool;
 	private Roster mRoster;
+	private MessageListener mMessageListener = new MessageListener() {
+        public void processMessage(Chat chat, Message message) {
+            mService.onReceiveMessage(chat, message);
+        }
+    };
 	
 	public ConnectionManager(SeedService service) {
 		mService = service;
@@ -52,6 +59,17 @@ public class ConnectionManager {
 			mConnection.sendPacket(presence);
 		}
 		mRoster = mConnection.getRoster();
+		mChatMgr = mConnection.getChatManager();
+		mChatMgr.addChatListener(new ChatManagerListener() {
+
+			@Override
+			public void chatCreated(Chat chat, boolean createdLocally) {
+				if (!createdLocally) {
+					chat.addMessageListener(mMessageListener);
+				}
+			}
+
+		});
 	}
 
 	public Roster getRoster() {
@@ -59,25 +77,20 @@ public class ConnectionManager {
 	}
 
 	public String getSelfName() {
-		return mConnection.getAccountManager().getAccountAttribute("name");
-	}
-
-	public void createChatWith(String jid) {
-        ChatManager chatmanager = mConnection.getChatManager();
-        Chat chat = chatmanager.createChat(jid,
-                new MessageListener() {
-                    public void processMessage(Chat chat, Message message) {
-                        System.out.println("Received message: "
-                                + message.toXML());
-                        mService.onReceiveMessage(message);
-                    }
-                });
-        mChatPool.put(jid, chat);
+		return mConnection.getAccountManager().getAccountAttribute("username");
 	}
 
 	public void sendMessage(String jid, String msg) {
 		try {
-			mChatPool.get(jid).sendMessage(msg);
+			if (mChatMgr == null) {
+				return;
+			}
+	        Chat chat = mChatPool.get(jid);
+			if (chat == null) {
+				chat = mChatMgr.createChat(jid, mMessageListener);
+		        mChatPool.put(jid, chat);
+			}
+			chat.sendMessage(msg);
 		} catch (XMPPException e) {
 			e.printStackTrace();
 		}

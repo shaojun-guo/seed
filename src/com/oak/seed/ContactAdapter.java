@@ -9,8 +9,6 @@ import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.RosterGroup;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.Presence.Mode;
-import org.jivesoftware.smack.packet.Presence.Type;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -22,7 +20,6 @@ import android.widget.TextView;
 
 import com.oak.seed.data.ContactItem;
 import com.oak.seed.data.GroupItem;
-import com.oak.seed.utils.MyLog;
 import com.oak.seed.utils.Utils;
 
 public class ContactAdapter extends BaseExpandableListAdapter {

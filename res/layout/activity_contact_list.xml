@@ -22,9 +22,21 @@
             android:layout_marginTop="-10dp"
             android:layout_marginBottom="-10dp" />
     </LinearLayout>
-    <ExpandableListView android:id="@+id/contact_list"
+    <android.support.v4.widget.SlidingPaneLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent">
+        <ExpandableListView android:id="@+id/contact_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <LinearLayout android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Conversations"/>
+        </LinearLayout>
+    </android.support.v4.widget.SlidingPaneLayout>
     <TextView android:id="@+id/no_contact"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

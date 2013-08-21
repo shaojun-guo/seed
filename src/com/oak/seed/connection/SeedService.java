@@ -1,19 +1,25 @@
 package com.oak.seed.connection;
 
-import java.util.Collection;
 import java.util.HashMap;
 
-import org.jivesoftware.smack.Roster;
-import org.jivesoftware.smack.RosterListener;
+import org.jivesoftware.smack.Chat;
+import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Presence;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 
+import com.oak.seed.ChatActivity;
+import com.oak.seed.R;
+import com.oak.seed.data.MessageItem;
 import com.oak.seed.utils.MyLog;
+import com.oak.seed.utils.Utils;
 
 public class SeedService extends Service {
 	private static final String TAG = "SeedService";
@@ -39,6 +45,10 @@ public class SeedService extends Service {
 		mChatObervers.put(jid, l);
 	}
 
+	public void removeListener(String jid) {
+		mChatObervers.remove(jid);
+	}
+
 	public class LocalBinder extends Binder {
 		public SeedService getService() {
 			return SeedService.this;
@@ -59,7 +69,7 @@ public class SeedService extends Service {
 		stopSelf();
 	}
 
-	public void onReceiveMessage(Message message) {
+	public void onReceiveMessage(Chat chat, Message message) {
 		String from = message.getFrom();
 		int indexOfSlash = from.indexOf("/");
 		if (indexOfSlash != -1) {
@@ -67,10 +77,35 @@ public class SeedService extends Service {
 		}
 		MyLog.d(TAG, "from: " + from);
 		ChatListener l = mChatObervers.get(from);
-		if (l != null)
-			l.onMessageReceived(message.getBody());
-		else
-			MyLog.d(TAG, "Can not find listener");
+		if (l != null) {
+			l.onMessageReceived(message);
+		} else {
+			showNotification(from, message);
+		}
+	}
+
+	private void showNotification(String from, Message message) {
+		RosterEntry contact = mCm.getRoster().getEntry(from);
+		String title = from;
+		if (contact != null) {
+			title = contact.getName();
+		}
+		MessageItem item = Utils.makeReceivedMessage(title, message);
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+			.setAutoCancel(true)
+			.setSmallIcon(R.drawable.stat_notify_chat)
+			.setContentTitle(title)
+			.setContentText(item.getBody());
+
+		Intent resultIntent = new Intent(this, ChatActivity.class);
+		resultIntent.putExtra("jid", from);
+		resultIntent.putExtra("name", title);
+		PendingIntent resultPendingIntent = PendingIntent.getActivity(
+				this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		builder.setContentIntent(resultPendingIntent);
+		NotificationManager nm = (NotificationManager) getSystemService(
+				Context.NOTIFICATION_SERVICE);
+		nm.notify(R.drawable.stat_notify_chat, builder.build());
 	}
 
 	@Override

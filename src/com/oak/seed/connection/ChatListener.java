@@ -1,5 +1,7 @@
 package com.oak.seed.connection;
 
+import org.jivesoftware.smack.packet.Message;
+
 public interface ChatListener {
-	void onMessageReceived(String msg);
+	void onMessageReceived(Message message);
 }

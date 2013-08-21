@@ -75,9 +75,9 @@ public class ContactListActivity extends BinderActivity {
 					int groupPosition, int childPosition, long id) {
 				ContactItem contact = (ContactItem)mContactAdapter.getChild(groupPosition, childPosition);
 				String jid = contact.getEntry().getUser();
-				mCm.createChatWith(jid);
 				Intent i = new Intent(ContactListActivity.this, ChatActivity.class);
 				i.putExtra("jid", jid);
+				i.putExtra("name", contact.getEntry().getName());
 				startActivity(i);
 				return true;
 			}

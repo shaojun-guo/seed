@@ -1,33 +1,28 @@
 package com.oak.seed;
 
-import java.util.ArrayList;
+import org.jivesoftware.smack.packet.Message;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.oak.seed.connection.ChatListener;
+import com.oak.seed.utils.Utils;
 
 public class ChatActivity extends BinderActivity implements ChatListener {
 	String mJid;
+	String mReceiverName;
 	ListView mMessageList;
 	EditText mMessageInput;
 	Button mSendBtn;
 	ChatAdapter mAdapter;
 
-	String mNewMessage;
+	Message mNewMessage;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +30,7 @@ public class ChatActivity extends BinderActivity implements ChatListener {
 		setContentView(R.layout.activity_chat);
 		Intent i = getIntent();
 		mJid = i.getStringExtra("jid");
+		mReceiverName = i.getStringExtra("name");
 		if (TextUtils.isEmpty(mJid)) {
 			finish();
 			return;
@@ -50,8 +46,9 @@ public class ChatActivity extends BinderActivity implements ChatListener {
 				if (mService != null) {
 					String msg = mMessageInput.getText().toString();
 					if (!TextUtils.isEmpty(msg)) {
-						mAdapter.addMessage("> " +msg);
 						mCm.sendMessage(mJid, msg);
+						mAdapter.addMessage(Utils.makeMessageToSend(mCm.getSelfName(), msg));
+						mMessageInput.setText("");
 					}
 				}
 			}
@@ -62,64 +59,22 @@ public class ChatActivity extends BinderActivity implements ChatListener {
 		mService.addListener(mJid, this);
 	}
 
-	private Handler mHandler = new Handler() {
-		public void handleMessage(Message msg) {
-			switch (msg.what) {
-			case 0:
-				mAdapter.addMessage("< " + mNewMessage);
-				break;
-			}
+	public void onDestroy() {
+		mService.removeListener(mJid);
+		super.onDestroy();
+	}
+
+	private final Handler mHandler = new Handler() {
+		@Override
+		public void handleMessage(android.os.Message msg) {
+			Message message = (Message) msg.obj;
+			mAdapter.addMessage(Utils.makeReceivedMessage(mReceiverName, message));
 		}
 	};
 
 	@Override
-	public void onMessageReceived(String msg) {
-		mNewMessage = msg;
-		mHandler.sendEmptyMessage(0);
+	public void onMessageReceived(Message msg) {
+		mHandler.obtainMessage(0, msg).sendToTarget();
 	}
 
-	class ChatAdapter extends BaseAdapter {
-		ArrayList<String> mMessageList;
-		Context mContext;
-
-		public ChatAdapter(Context context) {
-			mContext = context;
-			mMessageList = new ArrayList<String>();
-		}
-
-		public void addMessage(String msg) {
-			Log.d("", "Add msg: " + msg);
-			mMessageList.add(msg);
-			notifyDataSetChanged();
-		}
-
-		@Override
-		public int getCount() {
-			return mMessageList.size();
-		}
-
-		@Override
-		public Object getItem(int position) {
-			return mMessageList.get(position);
-		}
-
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			String msg = mMessageList.get(position);
-			TextView text;
-			if (convertView == null) {
-				text = (TextView) LayoutInflater.from(mContext).inflate(android.R.layout.simple_list_item_1, null);
-			} else {
-				text = (TextView) convertView;
-			}
-			text.setText(msg);
-			return text;
-		}
-		
-	}
 }
